@@ -12,12 +12,12 @@ import java.util.Map;
 @Service
 public class UserService {
 
-    private Map<String, User> userDb = new HashMap<>();
+    private final Map<Integer, User> userDb = new HashMap<>();
 
     @PostConstruct
     public void initDb() {
-        userDb.put("1", new User("1", "Joe", "joe@gmail.com"));
-        userDb.put("2", new User("2", "Jenny", "jenny@gmail.com"));
+        userDb.put(1, new User(1, "Joe", "joe@gmail.com"));
+        userDb.put(2, new User(2, "Jenny", "jenny@gmail.com"));
     }
 
     public List<User> getUsers() {
@@ -32,7 +32,11 @@ public class UserService {
         userDb.put(user.getId(), user);
     }
 
-    public boolean checkIfExist(String id) {
+    public boolean checkIfExist(int id) {
         return userDb.containsKey(id);
+    }
+
+    public void deleteUser(int id) {
+        userDb.remove(id);
     }
 }

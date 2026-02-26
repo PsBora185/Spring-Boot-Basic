@@ -40,4 +40,13 @@ public class UserController {
         userService.addUser(user);
         return "User doesn't exists, Created new user.";
     }
+
+    @DeleteMapping
+    public String deleteUser(int id) {
+        if (userService.checkIfExist(id)) {
+            userService.deleteUser(id);
+            return "User deleted.";
+        }
+        return "User with this id doesn't exist.";
+    }
 }
