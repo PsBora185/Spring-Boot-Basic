@@ -10,4 +10,10 @@ public class Controller {
     public String Hello(){
         return "Hello";
     }
+
+    // spring boot converts automatically POJO to JSON using jackson
+    @GetMapping("/user")
+    public User getUser(){
+        return new User("Jim", 22, "jim@gmail.com");
+    }
 }
