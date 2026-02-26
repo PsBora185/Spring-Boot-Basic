@@ -2,6 +2,7 @@ package com.example.second.service;
 
 import com.example.second.entity.User;
 import jakarta.annotation.PostConstruct;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class UserService {
     public void initDb() {
         userDb.put(1, new User(1, "Joe", "joe@gmail.com"));
         userDb.put(2, new User(2, "Jenny", "jenny@gmail.com"));
+        System.out.println("Added two users.");
     }
 
     public List<User> getUsers() {
@@ -38,5 +40,9 @@ public class UserService {
 
     public void deleteUser(int id) {
         userDb.remove(id);
+    }
+
+    public @Nullable User getById(int id) {
+        return userDb.get(id);
     }
 }

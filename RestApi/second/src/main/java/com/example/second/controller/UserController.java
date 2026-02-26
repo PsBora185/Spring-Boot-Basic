@@ -3,6 +3,9 @@ package com.example.second.controller;
 import com.example.second.entity.User;
 import com.example.second.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,35 +21,45 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<List<User>> users() {
+        return ResponseEntity.ok(userService.getUsers());
     }
 
     @PostMapping
-    public String addUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         if (userService.checkIfExist(user.getId()))
-            return "User already exist with this id.";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(userService.getById(user.getId()));
+
         userService.addUser(user);
-        return "User Created.";
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(user);
     }
 
     @PutMapping
-    public String updateUser(@RequestBody User user) {
-        if (userService.checkIfExist(user.getId())) {
-            userService.updateUser(user);
-            return "User updated.";
-        }
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        if (!userService.checkIfExist(user.getId()))
+            return ResponseEntity.notFound().build();
 
-        userService.addUser(user);
-        return "User doesn't exists, Created new user.";
+        userService.updateUser(user);
+        return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping
-    public String deleteUser(int id) {
-        if (userService.checkIfExist(id)) {
-            userService.deleteUser(id);
-            return "User deleted.";
-        }
-        return "User with this id doesn't exist.";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id) {
+        if (!userService.checkIfExist(id))
+            return ResponseEntity.notFound().build();
+
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted.");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable int id){
+        if (!userService.checkIfExist(id))
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
 }
